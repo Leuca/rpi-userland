@@ -1,11 +1,11 @@
-Name:           rpi-userland
-Version:        0.0.git.844.68e027bf
+Name:           {{{ git_dir_name }}}
+Version:        {{{ git_dir_version }}}
 Release:        2%{?dist}
 Summary:        Userland tools and libs for the Raspberry Pi
 
 License:        BSD-3
 URL:            https://github.com/raspberrypi/userland
-VCS:            git+https://github.com/Leuca/rpi-userland#68e027bf012d4ffa2b89d4dbe7f9832eef4354d6:
+VCS:            {{{ git_dir_vcs }}}
 
 ExclusiveArch:  %{arm} aarch64
 
@@ -13,7 +13,7 @@ BuildRequires:  git, gcc, gcc-c++, cmake, make, glibc, glibc-devel
 
 Provides:       vcgencmd
 
-Source:         rpi-userland-68e027bf.tar.gz
+Source:         {{{ git_dir_pack }}}
 
 %package examples
 Requires:       rpi-userland
