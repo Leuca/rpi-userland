@@ -1,6 +1,6 @@
 Name:           {{{ git_dir_name }}}
 Version:        {{{ git_dir_version }}}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Userland tools and libs for the Raspberry Pi
 
 License:        BSD-3
@@ -11,24 +11,39 @@ ExclusiveArch:  %{arm} aarch64
 
 BuildRequires:  git, gcc, gcc-c++, cmake, make, glibc, glibc-devel
 
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+
 Provides:       vcgencmd
 
 Source:         {{{ git_dir_pack }}}
-
-%package examples
-Requires:       rpi-userland
-Summary:        Userland hello-pi source code
 
 %description
 Raspberry Pi ARM side libraries and utilities.
 ARM side code to interface to: EGL, mmal, GLESv2, vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG.
 
-%description examples
+%package	examples
+Requires:       rpi-userland
+Summary:        Userland hello-pi source code
+
+%description	examples
 Provides the 'hello-pi' source code from rpi-userland Raspberry Pi ARM side libraries and utilities.
 
-%prep
-%setup -T -b 0 -q -n rpi-userland
+%package	libs
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Summary:	%{name} libraries
 
+%description	libs
+Raspberry Pi ARM side libraries
+
+%package	libs-devel
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Summary:	Development package for %{name}
+
+%description	libs-devel
+Files needed to develop with %{name}
+
+%prep
+{{{ git_dir_setup_macro }}}
 
 %build
 mkdir -p build/rpm/release
@@ -59,12 +74,18 @@ mv %{buildroot}/%{_prefix}/man %{buildroot}/%{_datadir}
 
 %files
 %license LICENCE
-%{_includedir}/*
-%{_libdir}/*
 %{_bindir}/*
 %{_mandir}/*
 
 %files examples
 %{_usrsrc}/*
 
+%files libs
+%{_libdir}/lib*
+
+%files libs-devel
+%{_includedir}/*
+%{_libdir}/pkgconfig/*.pc
+
 %changelog
+{{{ git_dir_changelog }}}
