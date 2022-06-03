@@ -31,7 +31,9 @@ Provides the 'hello-pi' source code from rpi-userland Raspberry Pi ARM side libr
 %package	libs
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Summary:	%{name} libraries
-Provides:	libglvnd libglvnd-egl libglvnd-gles
+Obsoletes:	libglvnd <= 2
+Obsoletes:	libglvnd-egl <= 2
+Obsoletes:	libglvnd-gles <= 2
 
 %description	libs
 Raspberry Pi ARM side libraries
@@ -39,7 +41,7 @@ Raspberry Pi ARM side libraries
 %package	libs-devel
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Summary:	Development package for %{name}
-Provides:	libglvnd-devel
+Obsoletes:	libglvnd-devel <= 2
 
 %description	libs-devel
 Files needed to develop with %{name}
