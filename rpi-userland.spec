@@ -1,6 +1,6 @@
 Name:           {{{ git_dir_name }}}
 Version:        {{{ git_dir_version }}}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Userland tools and libs for the Raspberry Pi
 
 License:        BSD-3
@@ -31,6 +31,7 @@ Provides the 'hello-pi' source code from rpi-userland Raspberry Pi ARM side libr
 %package	libs
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Summary:	%{name} libraries
+Provides:	libglvnd libglvnd-egl libglvnd-gles
 
 %description	libs
 Raspberry Pi ARM side libraries
@@ -38,6 +39,7 @@ Raspberry Pi ARM side libraries
 %package	libs-devel
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Summary:	Development package for %{name}
+Provides:	libglvnd-devel
 
 %description	libs-devel
 Files needed to develop with %{name}
