@@ -69,8 +69,6 @@ mv %{buildroot}%{_prefix}/lib %{buildroot}%{_libdir}
 mkdir -p %{buildroot}%{_datadir}
 mv %{buildroot}%{_prefix}/man %{buildroot}%{_datadir}
 
-
-
 %files
 %license LICENCE
 %{_bindir}/*
