@@ -12,6 +12,7 @@ ExclusiveArch:  aarch64
 BuildRequires:  git, gcc, gcc-c++, cmake, make, glibc, glibc-devel
 
 Provides:       vcgencmd
+Provides:	libfdt.so()(64bit)
 
 Source:         {{{ git_dir_pack }}}
 
@@ -68,6 +69,7 @@ mv %{buildroot}%{_prefix}/lib %{buildroot}%{_libdir}
 %endif
 mkdir -p %{buildroot}%{_datadir}
 mv %{buildroot}%{_prefix}/man %{buildroot}%{_datadir}
+install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 
 %files
 %license LICENCE
