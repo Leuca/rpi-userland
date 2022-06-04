@@ -55,6 +55,8 @@ Fake development package for broadcom version of libglvnd libraries for RPi
 %cmake \
         -DARM64:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DBUILD_SHARED_LIBS:BOOL=ON \
+	-DBUILD_STATIC_LIBS:BOOL=OFF \
         -DVMCS_INSTALL_PREFIX=%{_prefix} \
 
 %cmake_build
