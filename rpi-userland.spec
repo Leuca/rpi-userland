@@ -75,6 +75,7 @@ install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 %license LICENCE
 %{_bindir}/*
 %{_libdir}/*.so
+%{_libdir}/plugins/*
 %{_mandir}/*
 
 %files examples
