@@ -16,6 +16,8 @@ Provides:       libfdt.so()(64bit)
 
 Source:         {{{ git_dir_pack }}}
 
+Patch0:         rpi-userland-add-soversion.patch
+
 %description
 Raspberry Pi ARM side libraries and utilities.
 ARM side code to interface to: EGL, mmal, GLESv2, vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG.
@@ -45,6 +47,7 @@ Fake development package for broadcom version of libglvnd libraries for RPi
 
 %prep
 {{{ git_dir_setup_macro }}}
+%autopatch -p1
 
 %build
 %cmake \
