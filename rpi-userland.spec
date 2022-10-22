@@ -77,6 +77,8 @@ install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 %{_libdir}/*.so
 %{_libdir}/plugins/*
 %{_mandir}/*
+%{_libdir}/plugins/reader_*.so
+%{_libdir}/plugins/writer_*.so
 
 %files examples
 %{_usrsrc}/*
