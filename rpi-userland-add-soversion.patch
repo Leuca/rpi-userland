@@ -1,0 +1,387 @@
+diff --git a/containers/CMakeLists.txt b/containers/CMakeLists.txt
+index 5570038..a897a47 100644
+--- a/containers/CMakeLists.txt
++++ b/containers/CMakeLists.txt
+@@ -65,6 +65,7 @@ set(packetizers_SRCS ${packetizers_SRCS} ${SOURCE_DIR}/pcm/pcm_packetizer.c)
+ set(packetizers_SRCS ${packetizers_SRCS} ${SOURCE_DIR}/h264/avc1_packetizer.c)
+ 
+ add_library(containers ${LIBRARY_TYPE} ${core_SRCS} ${io_SRCS} ${net_SRCS} ${packetizers_SRCS})
++set_target_properties(containers PROPERTIES SOVERSION 0.0.0)
+ target_link_libraries(containers vcos)
+ install(TARGETS containers DESTINATION lib)
+ 
+diff --git a/containers/asf/CMakeLists.txt b/containers/asf/CMakeLists.txt
+index 2cd7ac2..a6342fb 100644
+--- a/containers/asf/CMakeLists.txt
++++ b/containers/asf/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_asf ${LIBRARY_TYPE} asf_reader.c)
+ 
++set_target_properties(reader_asf PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_asf containers)
+ 
+ install(TARGETS reader_asf DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_asf ${LIBRARY_TYPE} asf_writer.c)
+ 
++set_target_properties(writer_asf PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_asf containers)
+ 
+ install(TARGETS writer_asf DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/avi/CMakeLists.txt b/containers/avi/CMakeLists.txt
+index f8589c1..d245f34 100644
+--- a/containers/avi/CMakeLists.txt
++++ b/containers/avi/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_avi ${LIBRARY_TYPE} avi_reader.c)
+ 
++set_target_properties(reader_avi PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_avi containers)
+ 
+ install(TARGETS reader_avi DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_avi ${LIBRARY_TYPE} avi_writer.c)
+ 
++set_target_properties(writer_avi PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_avi containers)
+ 
+ install(TARGETS writer_avi DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/binary/CMakeLists.txt b/containers/binary/CMakeLists.txt
+index c159b40..3aa864c 100644
+--- a/containers/binary/CMakeLists.txt
++++ b/containers/binary/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_binary ${LIBRARY_TYPE} binary_reader.c)
+ 
++set_target_properties(reader_binary PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_binary containers)
+ 
+ install(TARGETS reader_binary DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_binary ${LIBRARY_TYPE} binary_writer.c)
+ 
++set_target_properties(writer_binary PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_binary containers)
+ 
+ install(TARGETS writer_binary DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/dummy/CMakeLists.txt b/containers/dummy/CMakeLists.txt
+index 4643438..334389f 100644
+--- a/containers/dummy/CMakeLists.txt
++++ b/containers/dummy/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(writer_dummy ${LIBRARY_TYPE} dummy_writer.c)
+ 
++set_target_properties(writer_dummy PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_dummy containers)
+ 
+ install(TARGETS writer_dummy DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/flash/CMakeLists.txt b/containers/flash/CMakeLists.txt
+index bf53935..dc63818 100644
+--- a/containers/flash/CMakeLists.txt
++++ b/containers/flash/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_flv ${LIBRARY_TYPE} flv_reader.c)
+ 
++set_target_properties(reader_flv PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_flv containers)
+ 
+ install(TARGETS reader_flv DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/metadata/id3/CMakeLists.txt b/containers/metadata/id3/CMakeLists.txt
+index 30178f8..ac23107 100644
+--- a/containers/metadata/id3/CMakeLists.txt
++++ b/containers/metadata/id3/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_metadata_id3 ${LIBRARY_TYPE} id3_metadata_reader.c)
+ 
++set_target_properties(reader_metadata_id3 PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_metadata_id3 containers)
+ 
+ install(TARGETS reader_metadata_id3 DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/mkv/CMakeLists.txt b/containers/mkv/CMakeLists.txt
+index 0c31a30..5e6b0e6 100644
+--- a/containers/mkv/CMakeLists.txt
++++ b/containers/mkv/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_mkv ${LIBRARY_TYPE} matroska_reader.c)
+ 
++set_target_properties(reader_mkv PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_mkv containers)
+ 
+ install(TARGETS reader_mkv DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/mp4/CMakeLists.txt b/containers/mp4/CMakeLists.txt
+index 87892c2..c61db74 100644
+--- a/containers/mp4/CMakeLists.txt
++++ b/containers/mp4/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_mp4 ${LIBRARY_TYPE} mp4_reader.c)
+ 
++set_target_properties(reader_mp4 PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_mp4 containers)
+ 
+ install(TARGETS reader_mp4 DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_mp4 ${LIBRARY_TYPE} mp4_writer.c)
+ 
++set_target_properties(writer_mp4 PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_mp4 containers)
+ 
+ install(TARGETS writer_mp4 DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/mpeg/CMakeLists.txt b/containers/mpeg/CMakeLists.txt
+index 5afe585..c1471f2 100644
+--- a/containers/mpeg/CMakeLists.txt
++++ b/containers/mpeg/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_ps ${LIBRARY_TYPE} ps_reader.c)
+ 
++set_target_properties(reader_ps PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_ps containers)
+ 
+ install(TARGETS reader_ps DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/mpga/CMakeLists.txt b/containers/mpga/CMakeLists.txt
+index 79cf39a..cfe49fe 100644
+--- a/containers/mpga/CMakeLists.txt
++++ b/containers/mpga/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_mpga ${LIBRARY_TYPE} mpga_reader.c)
+ 
++set_target_properties(reader_mpga PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_mpga containers)
+ 
+ install(TARGETS reader_mpga DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/qsynth/CMakeLists.txt b/containers/qsynth/CMakeLists.txt
+index b188e50..c8878c6 100644
+--- a/containers/qsynth/CMakeLists.txt
++++ b/containers/qsynth/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_qsynth ${LIBRARY_TYPE} qsynth_reader.c)
+ 
++set_target_properties(reader_qsynth PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_qsynth containers)
+ 
+ install(TARGETS reader_qsynth DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/raw/CMakeLists.txt b/containers/raw/CMakeLists.txt
+index 0ada17e..e41fe6a 100644
+--- a/containers/raw/CMakeLists.txt
++++ b/containers/raw/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_raw_video ${LIBRARY_TYPE} raw_video_reader.c)
+ 
++set_target_properties(reader_raw_video PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_raw_video containers)
+ 
+ install(TARGETS reader_raw_video DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_raw_video ${LIBRARY_TYPE} raw_video_writer.c)
+ 
++set_target_properties(writer_raw_video PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_raw_video containers)
+ 
+ install(TARGETS writer_raw_video DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/rcv/CMakeLists.txt b/containers/rcv/CMakeLists.txt
+index 9407f58..e4ba21a 100644
+--- a/containers/rcv/CMakeLists.txt
++++ b/containers/rcv/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_rcv ${LIBRARY_TYPE} rcv_reader.c)
+ 
++set_target_properties(reader_rcv PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_rcv containers)
+ 
+ install(TARGETS reader_rcv DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/rtp/CMakeLists.txt b/containers/rtp/CMakeLists.txt
+index e6ba3a9..4c6b0d0 100644
+--- a/containers/rtp/CMakeLists.txt
++++ b/containers/rtp/CMakeLists.txt
+@@ -11,6 +11,8 @@ set(rtp_SRCS ${rtp_SRCS} rtp_mpeg4.c)
+ set(rtp_SRCS ${rtp_SRCS} rtp_base64.c)
+ add_library(reader_rtp ${LIBRARY_TYPE} ${rtp_SRCS})
+ 
++set_target_properties(reader_rtp PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_rtp containers)
+ 
+ install(TARGETS reader_rtp DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/rtsp/CMakeLists.txt b/containers/rtsp/CMakeLists.txt
+index 5c386f6..e78021a 100644
+--- a/containers/rtsp/CMakeLists.txt
++++ b/containers/rtsp/CMakeLists.txt
+@@ -8,6 +8,8 @@ include_directories (../..)
+ set(rtsp_SRCS ${rtsp_SRCS} rtsp_reader.c)
+ add_library(reader_rtsp ${LIBRARY_TYPE} ${rtsp_SRCS})
+ 
++set_target_properties(reader_rtsp PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_rtsp containers)
+ 
+ install(TARGETS reader_rtsp DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/rv9/CMakeLists.txt b/containers/rv9/CMakeLists.txt
+index f65a7af..d5001f1 100644
+--- a/containers/rv9/CMakeLists.txt
++++ b/containers/rv9/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_rv9 ${LIBRARY_TYPE} rv9_reader.c)
+ 
++set_target_properties(reader_rv9 PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_rv9 containers)
+ 
+ install(TARGETS reader_rv9 DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/simple/CMakeLists.txt b/containers/simple/CMakeLists.txt
+index 0fbdc11..c389330 100644
+--- a/containers/simple/CMakeLists.txt
++++ b/containers/simple/CMakeLists.txt
+@@ -7,12 +7,16 @@ include_directories (../..)
+ 
+ add_library(reader_simple ${LIBRARY_TYPE} simple_reader.c)
+ 
++set_target_properties(reader_simple PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_simple containers)
+ 
+ install(TARGETS reader_simple DESTINATION ${VMCS_PLUGIN_DIR})
+ 
+ add_library(writer_simple ${LIBRARY_TYPE} simple_writer.c)
+ 
++set_target_properties(writer_simple PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(writer_simple containers)
+ 
+ install(TARGETS writer_simple DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/containers/wav/CMakeLists.txt b/containers/wav/CMakeLists.txt
+index aed61c6..f71f0cb 100644
+--- a/containers/wav/CMakeLists.txt
++++ b/containers/wav/CMakeLists.txt
+@@ -7,6 +7,8 @@ include_directories (../..)
+ 
+ add_library(reader_wav ${LIBRARY_TYPE} wav_reader.c)
+ 
++set_target_properties(reader_wav PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(reader_wav containers)
+ 
+ install(TARGETS reader_wav DESTINATION ${VMCS_PLUGIN_DIR})
+diff --git a/helpers/dtoverlay/CMakeLists.txt b/helpers/dtoverlay/CMakeLists.txt
+index b3bd30f..6543ed7 100644
+--- a/helpers/dtoverlay/CMakeLists.txt
++++ b/helpers/dtoverlay/CMakeLists.txt
+@@ -20,6 +20,8 @@ endif ()
+ add_library (dtovl ${SHARED}
+              dtoverlay.c)
+ 
++set_target_properties(dtovl PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(dtovl fdt)
+ 
+ install (TARGETS dtovl DESTINATION lib)
+diff --git a/host_applications/linux/libs/bcm_host/CMakeLists.txt b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+index 2f4beb9..1257f5d 100644
+--- a/host_applications/linux/libs/bcm_host/CMakeLists.txt
++++ b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+@@ -17,6 +17,8 @@ include_directories( ../../../..
+ 
+ add_library(bcm_host ${SHARED} bcm_host.c)
+ 
++set_target_properties(bcm_host PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(bcm_host vcos vchostif)
+ 
+ install(TARGETS bcm_host DESTINATION lib)
+diff --git a/host_applications/linux/libs/debug_sym/CMakeLists.txt b/host_applications/linux/libs/debug_sym/CMakeLists.txt
+index d437b99..0957d18 100644
+--- a/host_applications/linux/libs/debug_sym/CMakeLists.txt
++++ b/host_applications/linux/libs/debug_sym/CMakeLists.txt
+@@ -9,8 +9,8 @@ include_directories (
+    ${VIDEOCORE_ROOT})
+ 
+ add_library(debug_sym ${SHARED} debug_sym.c)
+-add_library(debug_sym_static STATIC debug_sym.c)
++
++set_target_properties(debug_sym PROPERTIES SOVERSION 0.0.0)
+ 
+ install(TARGETS debug_sym DESTINATION lib)
+-install(TARGETS debug_sym_static DESTINATION lib)
+ install(FILES debug_sym.h DESTINATION include/interface/debug_sym)
+diff --git a/host_applications/linux/libs/sm/CMakeLists.txt b/host_applications/linux/libs/sm/CMakeLists.txt
+index 5ce5aca..7369b17 100644
+--- a/host_applications/linux/libs/sm/CMakeLists.txt
++++ b/host_applications/linux/libs/sm/CMakeLists.txt
+@@ -12,6 +12,8 @@ include_directories( ../../../..
+ 
+ add_library(vcsm ${SHARED} user-vcsm.c)
+ 
++set_target_properties(vcsm PROPERTIES SOVERSION 0.0.0)
++
+ target_link_libraries(vcsm vcos)
+ 
+ install(TARGETS vcsm DESTINATION lib)
+diff --git a/interface/mmal/CMakeLists.txt b/interface/mmal/CMakeLists.txt
+index 8208f7c..f70e7c8 100644
+--- a/interface/mmal/CMakeLists.txt
++++ b/interface/mmal/CMakeLists.txt
+@@ -7,6 +7,8 @@ add_definitions(-Wall -Werror)
+ 
+ add_library(mmal SHARED util/mmal_util.c)
+ 
++set_target_properties(mmal PROPERTIES SOVERSION 0.0.0)
++
+ add_subdirectory(core)
+ add_subdirectory(util)
+ add_subdirectory(vc)
+diff --git a/interface/vchiq_arm/CMakeLists.txt b/interface/vchiq_arm/CMakeLists.txt
+index 7af383d..36a70c4 100644
+--- a/interface/vchiq_arm/CMakeLists.txt
++++ b/interface/vchiq_arm/CMakeLists.txt
+@@ -2,6 +2,8 @@
+ add_library(vchiq_arm SHARED
+             vchiq_lib.c vchiq_util.c)
+ 
++set_target_properties(vchiq_arm PROPERTIES SOVERSION 0.0.0)
++
+ # pull in VCHI cond variable emulation
+ target_link_libraries(vchiq_arm vcos)
+ 
+diff --git a/interface/vmcs_host/CMakeLists.txt b/interface/vmcs_host/CMakeLists.txt
+index cbef80c..12e7c60 100755
+--- a/interface/vmcs_host/CMakeLists.txt
++++ b/interface/vmcs_host/CMakeLists.txt
+@@ -15,6 +15,8 @@ add_library(vchostif
+ #            ${VMCS_TARGET}/vmcs_main.c
+ #  vc_vchi_haud.c
+ #add_library(bufman            vc_vchi_bufman.c            )
++
++set_target_properties(vchostif PROPERTIES SOVERSION 0.0.0)
+ set(INSTALL_TARGETS vchostif)
+ 
+ if(NOT ARM64)
