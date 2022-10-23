@@ -31,7 +31,6 @@ Provides the 'hello-pi' source code from rpi-userland Raspberry Pi ARM side libr
 
 %package    devel
 Requires:   %{name}%{?_isa} = %{version}-%{release}
-Requires:   %{name}-static%{?_isa} = %{version}-%{release}
 Summary:    Development package for %{name}
 
 %description    devel
