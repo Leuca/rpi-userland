@@ -12,7 +12,6 @@ ExclusiveArch:  aarch64
 BuildRequires:  git, gcc, gcc-c++, cmake, make, glibc, glibc-devel
 
 Provides:       vcgencmd
-Provides:       libfdt.so()(64bit)
 
 Source:         {{{ git_dir_pack }}}
 
@@ -23,7 +22,7 @@ Raspberry Pi ARM side libraries and utilities.
 ARM side code to interface to: EGL, mmal, GLESv2, vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG.
 
 %package    examples
-Requires:       rpi-userland
+Requires:       %{name}
 Summary:        Userland hello-pi source code
 
 %description    examples
