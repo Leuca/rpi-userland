@@ -2,4 +2,4 @@ version: "1"
 rules:
   - base: copr
     upstream: raspberrypi:master
-    mergeMethod: rebase
+    mergeMethod: merge
