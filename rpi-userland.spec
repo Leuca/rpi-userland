@@ -1,6 +1,6 @@
 Name:           {{{ git_dir_name }}}
 Version:        {{{ git_dir_version lead=0.0 follow=0 }}}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Userland tools and libs for the Raspberry Pi
 
 License:        BSD-3
@@ -19,7 +19,7 @@ Patch0:         rpi-userland-add-soversion.patch
 
 %description
 Raspberry Pi ARM side libraries and utilities.
-ARM side code to interface to: EGL, mmal, GLESv2, vcos, openmaxil, vchiq_arm, bcm_host, WFC, OpenVG.
+ARM side code to interface to: mmal, vcos, vchiq_arm, bcm_host.
 
 %package    examples
 Requires:       %{name}
@@ -35,13 +35,6 @@ Summary:    Development package for %{name}
 %description    devel
 Files needed to develop with %{name}
 
-%package    -n libglvnd-devel
-Requires:   %{name}%{?_isa} = %{version}-%{release}
-Summary:    Fake development package for brcmEGL and brcmGLES
-Conflicts:  libglvnd-devel
-
-%description    -n libglvnd-devel
-Fake development package for broadcom version of libglvnd libraries for RPi
 
 %prep
 {{{ git_dir_setup_macro }}}
@@ -70,10 +63,7 @@ install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 %license LICENCE
 %{_bindir}/*
 %{_libdir}/*.so.*
-%{_libdir}/plugins/*
 %{_mandir}/*
-%{_libdir}/plugins/reader_*.so.*
-%{_libdir}/plugins/writer_*.so.*
 
 %files examples
 %{_usrsrc}/*
@@ -90,16 +80,13 @@ install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 %{_libdir}/pkgconfig/mmal.pc
 %{_libdir}/pkgconfig/vcsm.pc
 %{_libdir}/*.so
-%{_libdir}/plugins/reader_*.so
-%{_libdir}/plugins/writer_*.so
+%ghost %{_includedir}/EGL/*
+%ghost %{_includedir}/GLES/*
+%ghost %{_includedir}/GLES2/*
+%ghost %{_includedir}/KHR/*
+%ghost %{_libdir}/pkgconfig/brcmegl.pc
+%ghost %{_libdir}/pkgconfig/brcmglesv2.pc
 
-%files -n libglvnd-devel
-%{_includedir}/EGL/*
-%{_includedir}/GLES/*
-%{_includedir}/GLES2/*
-%{_includedir}/KHR/*
-%{_libdir}/pkgconfig/brcmegl.pc
-%{_libdir}/pkgconfig/brcmglesv2.pc
 
 %changelog
 {{{ git_dir_changelog }}}
