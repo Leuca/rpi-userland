@@ -1,0 +1,11 @@
+function get_ver_major() {
+    cat CMakeLists.txt | grep -m 1 PROJECT_VER_MAJOR | cut -d" " -f 2 | cut -d")" -f 1
+}
+
+function get_ver_minor() {
+    cat CMakeLists.txt | grep -m 1 PROJECT_VER_MINOR | cut -d" " -f 2 | cut -d")" -f 1
+}
+
+function get_ver_patch() {
+    cat CMakeLists.txt | grep -m 1 PROJECT_VER_PATCH | cut -d" " -f 2 | cut -d")" -f 1
+}

@@ -1,5 +1,9 @@
+%global major {{{ get_ver_major }}}
+%global minor {{{ get_ver_minor }}}
+%global patch {{{ get_ver_patch }}}
+
 Name:           {{{ git_dir_name }}}
-Version:        {{{ git_dir_version lead=0.0 follow=0 }}}
+Version:        {{{ git_dir_version lead=%{major}.%{minor} follow=%{patch} }}}
 Release:        6%{?dist}
 Summary:        Userland tools and libs for the Raspberry Pi
 
