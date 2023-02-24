@@ -1,0 +1,48 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fe67fc8..8baa5b0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -112,7 +112,6 @@ endif()
+ 
+ # add linux apps
+ add_subdirectory(host_applications/linux)
+-add_subdirectory(opensrc/helpers/libfdt)
+ add_subdirectory(helpers/dtoverlay)
+ 
+ set(vmcs_host_apps_VERSION_MAJOR 1)
+diff --git a/helpers/dtoverlay/CMakeLists.txt b/helpers/dtoverlay/CMakeLists.txt
+index b3bd30f..a366af4 100644
+--- a/helpers/dtoverlay/CMakeLists.txt
++++ b/helpers/dtoverlay/CMakeLists.txt
+@@ -10,7 +10,6 @@ cmake_minimum_required (VERSION 2.8)
+ 
+ include_directories (${VIDEOCORE_ROOT}
+                      ${VIDEOCORE_ROOT}/helpers
+-                     ${VIDEOCORE_ROOT}/opensrc/helpers/libfdt
+                      ${VIDEOCORE_HEADERS_BUILD_DIR})
+ 
+ if (CMAKE_COMPILER_IS_GNUCC)
+diff --git a/host_applications/linux/apps/dtmerge/CMakeLists.txt b/host_applications/linux/apps/dtmerge/CMakeLists.txt
+index d3f7e36..a81344f 100755
+--- a/host_applications/linux/apps/dtmerge/CMakeLists.txt
++++ b/host_applications/linux/apps/dtmerge/CMakeLists.txt
+@@ -10,7 +10,6 @@ endif ()
+ include_directories (
+    ${VIDEOCORE_HEADERS_BUILD_DIR}
+    ${VIDEOCORE_ROOT}
+-   ${VIDEOCORE_ROOT}/opensrc/helpers/libfdt
+    ${VIDEOCORE_ROOT}/helpers/dtoverlay
+ )
+ 
+diff --git a/host_applications/linux/apps/dtoverlay/CMakeLists.txt b/host_applications/linux/apps/dtoverlay/CMakeLists.txt
+index 97bcadc..67924bb 100755
+--- a/host_applications/linux/apps/dtoverlay/CMakeLists.txt
++++ b/host_applications/linux/apps/dtoverlay/CMakeLists.txt
+@@ -10,7 +10,6 @@ endif ()
+ include_directories (
+    ${VIDEOCORE_HEADERS_BUILD_DIR}
+    ${VIDEOCORE_ROOT}
+-   ${VIDEOCORE_ROOT}/opensrc/helpers/libfdt
+    ${VIDEOCORE_ROOT}/helpers/dtoverlay
+ )
+ 

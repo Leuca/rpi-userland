@@ -9,13 +9,20 @@ VCS:            {{{ git_dir_vcs }}}
 
 ExclusiveArch:  aarch64
 
-BuildRequires:  git, gcc, gcc-c++, cmake, make, glibc, glibc-devel
+BuildRequires:  git
+BuildRequires:  gcc
+BuildRequires:  gcc-c++
+BuildRequires:  cmake
+BuildRequires:  make
+BuildRequires:  glibc-devel
+BuildRequires:  libfdt-devel
 
 Provides:       vcgencmd
 
 Source:         {{{ git_dir_pack }}}
 
 Patch0:         rpi-userland-add-soversion.patch
+Patch1:         rpi-userland-libfdt-fix.patch
 
 %description
 Raspberry Pi ARM side libraries and utilities.
@@ -57,7 +64,6 @@ mv %{buildroot}%{_prefix}/lib %{buildroot}%{_libdir}
 %endif
 mkdir -p %{buildroot}%{_datadir}
 mv %{buildroot}%{_prefix}/man %{buildroot}%{_datadir}
-install -m 0644 build/lib/libfdt.so %{buildroot}%{_libdir}
 
 %files
 %license LICENCE
