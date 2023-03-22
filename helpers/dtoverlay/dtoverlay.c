@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dtoverlay.h"
 
 #define ARRAY_SIZE(a)   (sizeof(a) / sizeof(a[0]))
+#define UNUSED(x) (void)(x)
 
 typedef enum
 {
@@ -232,7 +233,7 @@ int dtoverlay_set_node_properties(DTBLOB_T *dtb, const char *node_path,
       node_off = dtoverlay_create_node(dtb, node_path, 0);
    if (node_off >= 0)
    {
-      int i;
+      unsigned int i;
       for (i = 0; (i < num_properties) && (err == 0); i++)
       {
          DTOVERLAY_PARAM_T *p;
@@ -264,7 +265,7 @@ static int dynstring_init_size(struct dynstring *ds, int initial_size)
 {
    if (initial_size < 32)
       initial_size = 32;
-   ds->size = initial_size;
+   ds->size = 0;
    ds->len = 0;
    ds->buf = malloc(initial_size);
    if (!ds->buf)
@@ -272,6 +273,7 @@ static int dynstring_init_size(struct dynstring *ds, int initial_size)
       dtoverlay_error("  out of memory");
       return -FDT_ERR_NOSPACE;
    }
+   ds->size = initial_size;
    return 0;
 }
 
@@ -288,6 +290,10 @@ static int dynstring_set_size(struct dynstring *ds, int size)
       }
       ds->size = size;
    }
+   else if (size < 0)
+   {
+      return -FDT_ERR_BADVALUE;
+   }
    return 0;
 }
 
@@ -297,6 +303,8 @@ static int dynstring_dup(struct dynstring *ds, const char *src, int len)
 
    if (!len)
       len = strlen(src);
+   if (len < 0)
+      return -FDT_ERR_BADVALUE;
 
    err = dynstring_set_size(ds, len + 1);
    if (!err)
@@ -356,7 +364,7 @@ static int dtoverlay_set_node_name(DTBLOB_T *dtb, int node_off,
    int dir_len; // Excluding the node name, but with the trailling slash
    int name_len;
    int offset;
-   int fixup_idx;
+   unsigned int fixup_idx;
    int err = 0;
 
    // Fixups and local-fixups both use node names, so this
@@ -694,7 +702,7 @@ static int dtoverlay_apply_fixups(DTBLOB_T *dtb, const char *fixups_stringlist,
                                      offset_str - 1 - prop_name, &prop_len);
       if (!prop_ptr)
          return prop_len;
-      if (offset > (prop_len - 4))
+      if ((int)offset > (prop_len - 4))
          return -FDT_ERR_BADSTRUCTURE;
 
       // Now apply the patch. Yes, prop_ptr is a const void *, but the
@@ -997,7 +1005,7 @@ static int dtoverlay_get_target_offset(DTBLOB_T *base_dtb,
       phandle = fdt32_to_cpu(*(fdt32_t *)target_prop);
       if (!base_dtb)
       {
-         if (phandle < 0 || phandle > overlay_dtb->max_phandle)
+         if (phandle < 0 || (uint32_t)phandle > overlay_dtb->max_phandle)
             return -FDT_ERR_NOTFOUND;
          return fdt_node_offset_by_phandle(overlay_dtb->fdt, phandle);
       }
@@ -1052,7 +1060,7 @@ static int dtoverlay_apply_overlay_paths(DTBLOB_T *base_dtb, int strings_off,
 
       p = strchr(sym_path + 1, '/');
       if (!p || strncmp(p + 1, "__overlay__", 11) != 0 ||
-          (p[11] != '/' && p[11] != '\0'))
+          (p[12] != '/' && p[12] != '\0'))
          goto copy_verbatim;
 
       /* Rebase the symbol path so that
@@ -1086,7 +1094,7 @@ static int dtoverlay_apply_overlay_paths(DTBLOB_T *base_dtb, int strings_off,
       if (strcmp(target_path, "/") == 0)
          p++; // Avoid a '//' if the target is the root
       new_path_len = target_path_len + (sym_path + sym_len - p);
-      if (new_path_len >= sizeof(target_path))
+      if (new_path_len >= (int)sizeof(target_path))
       {
          dtoverlay_error("exported symbol path too long for %s", sym_path);
          err = -FDT_ERR_NOSPACE;
@@ -1343,7 +1351,7 @@ int dtoverlay_filter_symbols(DTBLOB_T *dtb)
    struct str_item
    {
       struct str_item *next;
-      char str[0];
+      char str[1];
    };
 
    symbols_off = dtoverlay_find_node(dtb, "/__symbols__", 0);
@@ -1367,7 +1375,7 @@ int dtoverlay_filter_symbols(DTBLOB_T *dtb)
       fdt_getprop_by_offset(dtb->fdt, prop_off, &name, NULL);
       if (!name)
          break;
-      new_str = malloc(sizeof(*new_str) + strlen(name) + 1);
+      new_str = malloc(sizeof(*new_str) + strlen(name));
       if (!new_str)
       {
          /* Free all of the internalised exports */
@@ -1453,7 +1461,7 @@ const char *dtoverlay_find_override(DTBLOB_T *dtb, const char *override_name,
    return data;
 }
 
-int hex_digit(char c)
+static int hex_digit(char c)
 {
    if (c >= '0' && c <= '9')
       return c - '0';
@@ -1465,6 +1473,19 @@ int hex_digit(char c)
       return -1;
 }
 
+static int hex_byte(const char *p)
+{
+   int nib1, nib2;
+
+   nib1 = hex_digit(p[0]);
+   if (nib1 < 0)
+      return -1;
+   nib2 = hex_digit(p[1]);
+   if (nib2 < 0)
+      return -1;
+   return (nib1 << 4) | nib2;
+}
+
 int dtoverlay_override_one_target(int override_type,
                                   const char *override_value,
                                   DTBLOB_T *dtb, int node_off,
@@ -1472,28 +1493,81 @@ int dtoverlay_override_one_target(int override_type,
                                   int target_off, int target_size,
                                   void *callback_state)
 {
+   UNUSED(target_phandle);
+   UNUSED(callback_state);
    int err = 0;
 
    if (override_type == DTOVERRIDE_STRING)
    {
-      char *prop_val;
+      char unescaped_value[256];
+      char *prop_val, *q;
+      const char *p;
       int prop_len;
 
-      /* Replace the whole property with the string */
+      p = override_value;
+      q = unescaped_value;
+      while (*p)
+      {
+         int c = *(p++);
+         if (c == '\\')
+         {
+            c = *(p++);
+            if (c >= '0' && c <= '7')
+            {
+               c -= '0';
+               if (*p >= '0' && *p <= '7')
+               {
+                  c = (c << 3) + *(p++) - '0';
+                  if (*p >= '0' && *p <= '7')
+                  {
+                     c = (c << 3) + *(p++) - '0';
+                     if (c > 255)
+                        c = -1;
+                  }
+               }
+            }
+            else if (c == 'a')
+               c = '\x07';
+            else if (c == 'b')
+               c = '\b';
+            else if (c == 'f')
+               c = '\f';
+            else if (c == 'n')
+               c = '\n';
+            else if (c == 'r')
+               c = '\r';
+            else if (c == 't')
+               c = '\t';
+            else if (c == 'v')
+               c = '\v';
+            else if (c == 'x')
+               c = hex_byte(p), p += 2;
+            else if (c != '\\' && c != '\'' && c != '"')
+               c = -1;
+            if (c < 0)
+            {
+               dtoverlay_error("invalid escape in '%s'", override_value);
+               return NON_FATAL(FDT_ERR_BADVALUE);
+            }
+         }
+         *(q++) = (char)c;
+      }
+      *(q++) = '\0';
+      /* Append to or replace the property string */
       if ((strcmp(prop_name, "bootargs") == 0) &&
           ((prop_val = fdt_getprop_w(dtb->fdt, node_off, prop_name,
                                      &prop_len)) != NULL) &&
           (prop_len > 0) && prop_val[0])
       {
          prop_val[prop_len - 1] = ' ';
-         err = fdt_appendprop_string(dtb->fdt, node_off, prop_name, override_value);
+         err = fdt_appendprop(dtb->fdt, node_off, prop_name, unescaped_value, q - unescaped_value);
       }
       else if (strcmp(prop_name, "name") == 0) // "name" is a pseudo-property
       {
-         err = dtoverlay_set_node_name(dtb, node_off, override_value);
+         err = dtoverlay_set_node_name(dtb, node_off, unescaped_value);
       }
       else
-         err = fdt_setprop_string(dtb->fdt, node_off, prop_name, override_value);
+         err = fdt_setprop(dtb->fdt, node_off, prop_name, unescaped_value, q - unescaped_value);
    }
    else if (override_type == DTOVERRIDE_BYTE_STRING)
    {
@@ -1504,18 +1578,17 @@ int dtoverlay_override_one_target(int override_type,
 
       while (*p)
       {
-          int nib1, nib2;
+          int byteval;
           // whitespace and colons are legal separators
           if (*p == ':' || *p == ' ' || *p == '\t')
           {
              p++;
              continue;
           }
-          nib1 = hex_digit(*p++);
-          nib2 = hex_digit(*p++);
-          if (nib1 < 0 || nib2 < 0)
+          byteval = hex_byte(p);
+          if (byteval < 0)
           {
-             dtoverlay_error("invalid bytestring '%s'", override_value);
+             dtoverlay_error("invalid bytestring at '%s'", p);
              return NON_FATAL(FDT_ERR_BADVALUE);
           }
           if (byte_count == sizeof(bytes_buf))
@@ -1523,7 +1596,8 @@ int dtoverlay_override_one_target(int override_type,
              dtoverlay_error("bytestring '%s' too long", override_value);
              return NON_FATAL(FDT_ERR_BADVALUE);
           }
-          bytes_buf[byte_count++] = (nib1 << 4) | nib2;
+          bytes_buf[byte_count++] = byteval;
+          p += 2;
       }
 
       err = fdt_setprop(dtb->fdt, node_off, prop_name, bytes_buf, byte_count);
@@ -1858,7 +1932,7 @@ static int dtoverlay_extract_override(const char *override_name,
    }
 
    // Check for space for a phandle, a terminating NUL and at least one char
-   if (len < (sizeof(fdt32_t) + 1 + 1))
+   if (len < ((int)sizeof(fdt32_t) + 1 + 1))
    {
       dtoverlay_error("  override %s: data is truncated or mangled",
                       override_name);
@@ -2552,7 +2626,6 @@ DTBLOB_T *dtoverlay_import_fdt(void *fdt, int buf_size)
    if (buf_size < dtb_len)
    {
       dtoverlay_error("fdt is too large");
-      err = -FDT_ERR_NOSPACE;
       goto error_exit;
    }
 
@@ -2592,15 +2665,15 @@ int dtoverlay_save_dtb(const DTBLOB_T *dtb, const char *filename)
 
    if (fp)
    {
-      long len = fdt_totalsize(dtb->fdt);
-      if (len != fwrite(dtb->fdt, 1, len, fp))
+      int len = fdt_totalsize(dtb->fdt);
+      if (fwrite(dtb->fdt, len, 1, fp) != 1)
       {
          dtoverlay_error("fwrite failed");
          err = -2;
          goto error_exit;
       }
       if (dtb->trailer_len &&
-          (fwrite(dtb->trailer, 1, dtb->trailer_len, fp) != dtb->trailer_len))
+          (fwrite(dtb->trailer, dtb->trailer_len, 1, fp) != 1))
       {
          dtoverlay_error("fwrite failed");
          err = -2;
@@ -2710,8 +2783,8 @@ int dtoverlay_find_symbol(DTBLOB_T *dtb, const char *symbol_name)
          return -FDT_ERR_NOTFOUND;
 
       //Ensure we don't have trailing NULLs
-      if (path_len > strnlen(node_path, path_len))
-         path_len = strnlen(node_path, path_len);
+      if (path_len > (int)strnlen(node_path, path_len))
+         path_len = (int)strnlen(node_path, path_len);
    }
 
    return fdt_path_offset_namelen(dtb->fdt, node_path, path_len);
