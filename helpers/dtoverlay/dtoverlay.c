@@ -220,6 +220,16 @@ int dtoverlay_find_node(DTBLOB_T *dtb, const char *node_path, int path_len)
    return fdt_path_offset_namelen(dtb->fdt, node_path, path_len);
 }
 
+int dtoverlay_first_subnode(DTBLOB_T *dtb, int node_off)
+{
+    return fdt_first_subnode(dtb->fdt, node_off);
+}
+
+int dtoverlay_next_subnode(DTBLOB_T *dtb, int subnode_off)
+{
+    return fdt_next_subnode(dtb->fdt, subnode_off);
+}
+
 // Returns 0 on success, otherwise <0 error code
 int dtoverlay_set_node_properties(DTBLOB_T *dtb, const char *node_path,
                                   DTOVERLAY_PARAM_T *properties,
@@ -2047,6 +2057,47 @@ static int dtoverlay_extract_override(const char *override_name,
              literal_value[0])
          {
             /* String */
+            if (type == DTOVERRIDE_STRING && !literal_value[0])
+            {
+               /* The empty string is a special case indicating that the literal
+                * string follows the NUL. This could appear as
+                *     "foo=","bar";
+                * but the expecged use case is to support label paths:
+                *     "console=",&uart1;
+                * which dtc will expand to something like:
+                *     "console=","/soc/serial@7e215040";
+                * Note that the corollary of this is that assigning an empty
+                * string (not a likely scenario, and not one encountered at the
+                * time of writing) requires an empty string to appear
+                * immediately afterwards:
+                *     <&aliases>,"console=","",<&node>,"other:0";
+                * or that the empty string assignment is at the end:
+                *     <&aliases>,"console=";
+                * although the same effect can be achieved with:
+                *     <&aliases>,"console[=00";
+                */
+               len = data_end - data;
+               if (!len)
+               {
+                  /* end-of-property case - treat as an empty string */
+                  literal_value = data - 1;
+                  override_len = 1;
+               }
+               else
+               {
+                  override_end = memchr(data, 0, len);
+                  if (!override_end)
+                  {
+                     dtoverlay_error("  override %s: string is not NUL-terminated",
+                                     override_name);
+                     return -FDT_ERR_BADSTRUCTURE;
+                  }
+
+                  literal_value = data;
+                  data = override_end + 1;
+               }
+               *datap = data;
+            }
             strcpy(override_value, literal_value);
          }
          else
@@ -2506,6 +2557,11 @@ void dtoverlay_init_map_from_fp(FILE *fp, const char *compatible,
         else if (strncmp(p, "bcm2711", len) == 0)
         {
             platform_name = "bcm2711";
+            break;
+        }
+        else if (strncmp(p, "bcm2712", len) == 0)
+        {
+            platform_name = "bcm2712";
             break;
         }
 
